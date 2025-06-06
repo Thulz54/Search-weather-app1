@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+            <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+                    <title>Weather Forecast App</title>
+
+                        <style>
+
+                            * {
+                                  margin: 0;
+                                    padding: 0;
+                                      box-sizing: border-box;
+                            }
+
+                            body {
+                                  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                    background: linear-gradient(to top right, #fefcea, #f1da36);
+                                      color: #333;
+                                        min-height: 100vh;
+                                          display: flex;
+                                            flex-direction: column;
+                                              align-items: center;
+                                                padding: 20px;
+                            }
+
+                            header {
+                                  background-color: rgba(255, 255, 255, 0.8);
+                                    width: 100%;
+                                      text-align: center;
+                                        padding: 20px;
+                                          border-radius: 12px;
+                                            margin-bottom: 20px;
+                                              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                            }
+
+                            header h1 {
+                                  font-size: 2rem;
+                                    color: #0e4d92;
+                                      margin-bottom: 10px;
+                            }
+
+                            form {
+                                  display: flex;
+                                    justify-content: center;
+                                      flex-wrap: wrap;
+                                        gap: 10px;
+                            }
+
+                            input[type="search"] {
+                                  padding: 10px;
+                                    font-size: 1rem;
+                                      border: 2px solid #0e4d92;
+                                        border-radius: 8px;
+                                          width: 220px;
+                            }
+
+                            input[type="submit"] {
+                                  background-color: #0e4d92;
+                                    color: white;
+                                      border: none;
+                                        padding: 10px 18px;
+                                          font-size: 1rem;
+                                            border-radius: 8px;
+                                              cursor: pointer;
+                                                transition: background 0.3s ease;
+                            }
+
+                            input[type="submit"]:hover {
+                                  background-color: #072f5f;
+                            }
+
+                            main {
+                                  text-align: center;
+                                    background-color: rgba(255, 255, 255, 0.9);
+                                      padding: 20px;
+                                        border-radius: 12px;
+                                          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                                            width: 100%;
+                                              max-width: 400px;
+                                                margin-bottom: 20px;
+                            }
+
+                            main div {
+                                  margin: 10px 0;
+                                    font-size: 1.1rem;
+                            }
+
+                            footer {
+                                  font-size: 0.9rem;
+                                    text-align: center;
+                                      margin-top: auto;
+                                        color: #555;
+                            }
+
+                            footer a {
+                                  color: #0e4d92;
+                                    text-decoration: none;
+                                      margin: 0 5px;
+                            }
+
+                            footer a:hover {
+                                  text-decoration: underline;
+                            }
+
+
+                        </style>
+
+                    </head>
+                    <body>
+                        <header>
+                            <form>
+                                <form>
+                                      <input type="search" placeholder="Enter city..." required />
+                                        <input type="submit" value="☀️ Search" />
+                                </form>
+
+                        </header>
+                        <main>
+                            <div>
+                                    <h1>South Africa</h1>
+                                    <p>
+                                        Saturday 7:18, sunny
+                                                    <br />
+                                                                Humidity:45%, Wind:6 km/h
+                                    </p>
+                                </div>
+                                <div>☀️ 8°C</div>
+                            </main>
+                            <footer>
+                                <p>
+                                    This project was coded by
+
+                                    <a href="https://www.shecodes.io/graduates/163326-nokuthula-mthimunye" target="_blank">Nokuthula Mthimunye</a> and is
+                                    <a href="https://github.com/Thulz54" target="_blank"> on GitHub</a> and
+                                                <a href="https://www.netlify.com/" target="_blank">hosted on Netlify</a>
+</p>
+</footer>
+
+<script>
+ const apiKey = "fbf2o208f95abce4a34t1e1f397a64a5";
+    
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      const city = getCityInput();
+      if (!city) {
+        alert("Please enter a city.");
+        return;
+      }
+      fetchWeatherData(city);
+    }
+    
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      const city = getCityInput();
+      if (!city) {
+        alert("Please enter a city.");
+        return;
+      }
+      fetchWeatherData(city);
+    }
+    
+    function getCityInput() {
+      return document.querySelector("input[type='search']").value.trim();
+    }
+    
+    function fetchWeatherData(city) {
+      const apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+
+      // Optional: show loading
+      document.querySelector("main").innerHTML = `<div>Loading weather for "${city}"...</div>`;
+
+      axios.get(apiUrl)
+        .then(displayWeather)
+        .catch(handleError);
+    }
+    
+    function displayWeather(response) {
+      const weather = response.data;
+
+      document.querySelector("main").innerHTML = `
+        <div><strong>${weather.city}</strong>, ${weather.country}</div>
+        <div>${weather.condition.description}</div>
+        <div><img src="${weather.condition.icon_url}" alt="${weather.condition.description}" /></div>
+        <div>🌡 Temp: ${weather.temperature.current}°C</div>
+        <div>💧 Humidity: ${weather.temperature.humidity}%</div>
+        <div>🌬 Wind: ${weather.wind.speed} km/h</div>
+      `;
+    }
+    
+    function handleError(error) {
+      console.error("API Error:", error);
+      document.querySelector("main").innerHTML = `<div>City not found. Please try again.</div>`;
+    }
+
+    // 6. Add event listener
+    document.querySelector("form").addEventListener("submit", handleFormSubmit);
+  </script>
+    
+    
+</script>
+                                                                   
+ </body>
+ </html>
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                    
+                            
+                
